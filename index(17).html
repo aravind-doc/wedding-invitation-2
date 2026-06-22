@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dr. Veena & Dr. Aravind | Wedding Invitation</title>
+<meta name="description" content="You are cordially invited to the wedding of Dr. Veena S. Kumar & Dr. Aravind K.V — 12 September 2026">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13/dist/gsap.min.js"></script>
+
+<style>
+/* ═══ RESET & TOKENS ═══ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --deep:#0a1a0a;
+  --gold:#c8a45c;--gold-l:#e2c97e;--gold-d:#a07c3a;
+  --txt:rgba(255,255,255,0.94);--dim:rgba(255,255,255,0.55);
+  --page-px:clamp(1.1rem,5vw,3rem);
+}
+html,body{
+  width:100%;height:100%;overflow:hidden;
+  font-family:'Cormorant Garamond',serif;
+  background:var(--deep);color:var(--txt);
+  -webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;
+}
+body{overflow:hidden;position:fixed;width:100%;height:100%}
+
+/* ═══ FIXED BACKGROUND ═══ */
+.bg-layer{position:fixed;inset:0;z-index:0;overflow:hidden}
+.bg-move{position:absolute;inset:-12%;will-change:transform;animation:droneMove 90s ease-in-out infinite}
+@keyframes droneMove{
+  0%{transform:translate(0,0) scale(1.0)}
+  25%{transform:translate(-2%,-3%) scale(1.08)}
+  50%{transform:translate(1%,-5%) scale(1.14)}
+  75%{transform:translate(-1%,-2%) scale(1.06)}
+  100%{transform:translate(0,0) scale(1.0)}
+}
+.bg-img{
+  position:absolute;inset:0;
+  background:url('bg.jpg') center center/cover no-repeat;
+  animation:amb 50s ease-in-out infinite;will-change:transform;
+}
+@keyframes amb{
+  0%{transform:scale(1.0) rotate(0deg)}
+  25%{transform:scale(1.04) rotate(.3deg)}
+  50%{transform:scale(1.08) rotate(0deg)}
+  75%{transform:scale(1.04) rotate(-.3deg)}
+  100%{transform:scale(1.0) rotate(0deg)}
+}
+.bg-scrim{position:absolute;inset:0;background:
+  radial-gradient(ellipse at center,transparent 0%,rgba(8,20,12,.30) 100%),
+  linear-gradient(180deg,rgba(8,20,12,.62) 0%,rgba(8,20,12,.42) 28%,rgba(8,20,12,.42) 72%,rgba(8,20,12,.66) 100%)}
+.bg-fog{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.fog{position:absolute;width:200%;height:100%;top:0;left:-50%;will-change:transform}
+.fog-a{background:radial-gradient(ellipse 60vw 130px at 15% 28%,rgba(255,255,255,.18) 0%,transparent 70%),radial-gradient(ellipse 80vw 110px at 55% 42%,rgba(255,255,255,.13) 0%,transparent 70%);animation:fR 30s linear infinite;opacity:.6}
+.fog-b{background:radial-gradient(ellipse 90vw 150px at 30% 60%,rgba(255,255,255,.14) 0%,transparent 65%);animation:fL 42s linear infinite;opacity:.5}
+.fog-c{background:radial-gradient(ellipse 100vw 90px at 40% 78%,rgba(255,255,255,.12) 0%,transparent 60%);animation:fR 52s linear infinite;opacity:.45}
+@keyframes fR{0%{transform:translateX(0)}100%{transform:translateX(50%)}}
+@keyframes fL{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ═══ SCROLL WRAPPER — slides horizontally or vertically via JS transform ═══ */
+.sw{
+  position:fixed;inset:0;z-index:1;
+  will-change:transform;
+}
+
+/* ═══ PAGE BASE ═══ */
+.page{
+  position:absolute;left:0;width:100%;
+  height:100vh;height:100dvh;
+  display:flex;align-items:center;justify-content:center;
+  padding:clamp(4rem,9vh,6rem) var(--page-px);
+  text-align:center;
+  overflow:hidden;
+  pointer-events:none;
+}
+.page.active{pointer-events:auto}
+/* Pages whose content can exceed viewport height (e.g. two venue cards
+   stacked on a narrow phone) scroll internally instead of clipping. */
+.page.scrollable{align-items:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+/* ═══ LOADER ═══ */
+.loader{position:fixed;inset:0;z-index:9999;background:var(--deep);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem}
+.loader-mono{font-family:'Cinzel',serif;font-size:clamp(1.8rem,6vw,2.5rem);font-weight:400;color:var(--gold);letter-spacing:.4em;opacity:0}
+.loader-bar{width:80px;height:1px;background:rgba(200,164,92,.15);position:relative;overflow:hidden}
+.loader-bar::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--gold);animation:lSlide 1s ease-in-out infinite}
+@keyframes lSlide{0%{left:-100%}100%{left:100%}}
+
+/* ═══ MUSIC BTN ═══ */
+.music-btn{position:fixed;top:max(1rem,env(safe-area-inset-top));right:max(1rem,env(safe-area-inset-right));z-index:1000;width:42px;height:42px;border-radius:50%;border:1px solid rgba(200,164,92,.35);background:rgba(10,26,10,.70);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.music-btn:hover{border-color:var(--gold);background:rgba(10,26,10,.9)}
+.m-bars{display:flex;align-items:flex-end;gap:2px;height:16px}
+.m-bars span{display:block;width:3px;background:var(--gold);border-radius:1px;transition:height .3s}
+.m-bars.on span:nth-child(1){animation:b1 .6s ease-in-out infinite}
+.m-bars.on span:nth-child(2){animation:b2 .5s ease-in-out infinite .1s}
+.m-bars.on span:nth-child(3){animation:b3 .7s ease-in-out infinite .2s}
+.m-bars.on span:nth-child(4){animation:b4 .55s ease-in-out infinite .05s}
+.m-bars:not(.on) span{height:3px!important}
+@keyframes b1{0%,100%{height:4px}50%{height:14px}}
+@keyframes b2{0%,100%{height:6px}50%{height:10px}}
+@keyframes b3{0%,100%{height:3px}50%{height:16px}}
+@keyframes b4{0%,100%{height:5px}50%{height:12px}}
+.music-tip{position:fixed;top:max(1.15rem,calc(env(safe-area-inset-top) + .15rem));right:max(3.8rem,calc(env(safe-area-inset-right) + 3.8rem));z-index:1000;font-family:'Cormorant',serif;font-style:italic;font-size:.8rem;color:var(--gold-l);background:rgba(10,26,10,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(200,164,92,.22);padding:.3rem .75rem;border-radius:20px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .5s ease;max-width:min(60vw,220px);text-align:right}
+.music-tip.show{opacity:1}
+
+/* ═══ MAP BTN ═══ */
+.map-btn{position:fixed;top:max(1rem,env(safe-area-inset-top));left:max(1rem,env(safe-area-inset-left));z-index:1000;width:42px;height:42px;border-radius:50%;border:1px solid rgba(200,164,92,.35);background:rgba(10,26,10,.70);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;text-decoration:none}
+.map-btn:hover{border-color:var(--gold);background:rgba(10,26,10,.9)}
+.map-btn svg{width:18px;height:18px;fill:var(--gold)}
+
+/* ═══ SCROLL CUE ═══ */
+.scroll-cue{position:absolute;bottom:max(1.6rem,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0}
+.scroll-cue span{font-family:'Cinzel',serif;font-size:.56rem;color:rgba(255,255,255,.7);letter-spacing:.24em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.7)}
+.scroll-chev{width:14px;height:14px;border-right:1.5px solid rgba(255,255,255,.6);border-bottom:1.5px solid rgba(255,255,255,.6);transform:rotate(45deg);animation:chev 2s ease-in-out infinite}
+@keyframes chev{0%,100%{transform:rotate(45deg) translateY(0)}50%{transform:rotate(45deg) translateY(5px)}}
+
+/* ═══ PAGE DOT NAVIGATION ═══ */
+.dot-nav{position:fixed;right:max(1.4rem,env(safe-area-inset-right));top:50%;transform:translateY(-50%);z-index:1000;display:flex;flex-direction:column;gap:10px}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(200,164,92,.3);border:1px solid rgba(200,164,92,.5);cursor:pointer;transition:all .35s;flex-shrink:0}
+.dot.active{background:var(--gold);transform:scale(1.3)}
+
+/* ═══════════════ PAGE 1 — YOU ARE INVITED ═══════════════ */
+.p-invite .headline{display:flex;flex-direction:column;align-items:center;line-height:1.04;gap:.1em}
+.p-invite .h-line{display:flex;justify-content:center;overflow:hidden;flex-wrap:wrap}
+.letter{font-family:'Cinzel',serif;font-weight:700;color:#fff;display:inline-block;opacity:0;
+  text-shadow:0 4px 30px rgba(0,0,0,.85),0 2px 10px rgba(0,0,0,.9)}
+.p-invite .letter{font-size:clamp(2rem,9vw,5.5rem);letter-spacing:.02em}
+.p-invite .excl{color:#fff}
+.intro-orn{margin:clamp(1.2rem,3vh,2rem) auto 0;opacity:0}
+.intro-orn svg{width:clamp(90px,28vw,140px);height:auto}
+.intro-sub{font-family:'Cormorant',serif;font-style:italic;font-weight:300;font-size:clamp(.95rem,2.6vw,1.4rem);color:var(--gold-l);letter-spacing:.28em;opacity:0;margin-top:clamp(1rem,2.5vh,1.6rem);text-shadow:0 2px 12px rgba(0,0,0,.7)}
+
+/* ═══════════════ PAGE 2 — NAMES ═══════════════ */
+.p-names .names-block{display:flex;flex-direction:column;align-items:center;line-height:.9;margin-bottom:clamp(1rem,3vh,1.6rem)}
+.p-names .name-line{display:flex;justify-content:center;overflow:hidden}
+.p-names .ln .letter{font-size:clamp(2.6rem,12vw,9rem);font-weight:800}
+.p-names .lw .letter{font-size:clamp(1.7rem,7.5vw,5.5rem);font-weight:500;font-style:italic;font-family:'Cormorant',serif;color:var(--gold-l);
+  text-shadow:0 3px 24px rgba(0,0,0,.8),0 0 40px rgba(200,164,92,.2)}
+.gold-div{width:0;height:1px;margin:clamp(.9rem,2.5vh,1.4rem) auto;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.save-dt{font-family:'Cormorant',serif;font-style:italic;font-weight:400;font-size:clamp(1rem,3.2vw,1.8rem);color:var(--gold-l);letter-spacing:.28em;text-transform:uppercase;opacity:0;text-shadow:0 2px 14px rgba(0,0,0,.75)}
+.date-tx{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(1.2rem,4.2vw,2.6rem);color:#fff;letter-spacing:.08em;opacity:0;margin-top:.3rem;text-shadow:0 2px 16px rgba(0,0,0,.85)}
+.mal-dt{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(.82rem,2vw,1.15rem);color:rgba(255,255,255,.7);letter-spacing:.13em;margin-top:.4rem;opacity:0;text-shadow:0 1px 10px rgba(0,0,0,.7)}
+
+/* ═══════════════ PAGE 3 — FAMILY ═══════════════ */
+.fam-content{width:100%;max-width:760px;margin:0 auto}
+.fam-text{font-family:'Cormorant',serif;font-style:italic;font-weight:400;font-size:clamp(1.15rem,3.2vw,1.7rem);color:var(--txt);line-height:1.95;letter-spacing:.015em;opacity:0;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+.fam-text .par{font-family:'Cinzel',serif;font-weight:500;font-size:clamp(1rem,2.6vw,1.35rem);color:var(--gold-l);letter-spacing:.06em;display:block;margin:.35rem 0;font-style:normal}
+.fam-text .addr{font-size:.82em;color:rgba(255,255,255,.62);display:block;margin-bottom:.9rem;font-style:italic}
+.fam-text .hi{font-family:'Cinzel',serif;color:#fff;font-style:normal;font-size:clamp(1.25rem,3.6vw,1.7rem);font-weight:600}
+.fam-text .amp{display:block;font-family:'Cormorant',serif;font-style:italic;font-weight:400;color:var(--gold-l);font-size:clamp(1.1rem,2.8vw,1.4rem);margin:.15rem 0;line-height:1.3}
+
+/* ═══════════════ PAGE 4 — VENUE CARDS ═══════════════ */
+.ven-wrap{width:100%;max-width:980px;margin:0 auto}
+.ven-title{font-family:'Cinzel',serif;font-weight:400;font-size:clamp(1.4rem,4vw,2.4rem);color:var(--gold);letter-spacing:.2em;margin-bottom:clamp(1.4rem,4vh,3.2rem);opacity:0;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.ven-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(1rem,3vw,2.2rem)}
+.tilt-wrap{perspective:1000px}
+.ven-card{position:relative;padding:clamp(1.5rem,4.5vw,3rem) clamp(1.2rem,3.5vw,2.2rem);border:1px solid rgba(200,164,92,.25);border-radius:8px;background:linear-gradient(160deg,rgba(18,38,24,.78) 0%,rgba(10,24,15,.86) 100%);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);overflow:hidden;opacity:0;transform-style:preserve-3d;will-change:transform;box-shadow:0 10px 38px rgba(0,0,0,.42)}
+.ven-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.vc-icon{width:54px;height:54px;margin:0 auto clamp(.6rem,2vh,1.3rem);border:1px solid rgba(200,164,92,.3);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.vc-icon svg{width:22px;height:22px}
+.vc-label{font-family:'Cinzel',serif;font-weight:500;font-size:clamp(.74rem,1.8vw,.95rem);color:var(--gold);letter-spacing:.26em;text-transform:uppercase;margin-bottom:clamp(.5rem,2vh,1.1rem)}
+.vc-date{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(1.15rem,3.2vw,1.7rem);color:#fff;margin-bottom:.15rem}
+.vc-day{font-family:'Cormorant',serif;font-style:italic;font-weight:400;font-size:clamp(.95rem,2.2vw,1.15rem);color:var(--gold-l);margin-bottom:clamp(.5rem,2vh,1.1rem)}
+.vc-time{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(1rem,2.4vw,1.25rem);color:var(--txt);margin-bottom:.4rem}
+.vc-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(1rem,2.4vw,1.3rem);color:var(--txt);margin-bottom:clamp(.8rem,3vh,1.7rem);line-height:1.5}
+.vc-map{display:inline-flex;align-items:center;gap:.5rem;font-family:'Cinzel',serif;font-size:clamp(.68rem,1.5vw,.78rem);letter-spacing:.16em;text-transform:uppercase;color:var(--gold);text-decoration:none;border:1px solid rgba(200,164,92,.3);padding:.65rem 1.4rem;border-radius:3px;transition:all .3s}
+.vc-map:hover{background:rgba(200,164,92,.14);border-color:var(--gold)}
+.vc-map svg{width:14px;height:14px;fill:var(--gold)}
+
+/* ═══════════════ PAGE 5 — GALLERY ═══════════════ */
+.gal-wrap{width:100%;max-width:1200px;margin:0 auto;display:flex;flex-direction:column;align-items:center}
+.gal-title{font-family:'Cinzel',serif;font-weight:400;font-size:clamp(1.4rem,4vw,2.4rem);color:var(--gold);letter-spacing:.2em;margin-bottom:clamp(2rem,5vh,3.2rem);opacity:0;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.gal-vp{width:100%;height:clamp(280px,62vw,440px);perspective:1100px;display:flex;align-items:center;justify-content:center;cursor:grab;-webkit-user-select:none;user-select:none;overflow:visible}
+.gal-vp:active{cursor:grabbing}
+.gal-cyl{position:relative;width:clamp(140px,34vw,230px);height:clamp(196px,47vw,310px);transform-style:preserve-3d;transition:transform .1s ease-out}
+.gal-item{position:absolute;width:clamp(130px,32vw,210px);height:clamp(182px,44vw,294px);left:50%;top:50%;border-radius:6px;overflow:hidden;box-shadow:0 12px 44px rgba(0,0,0,.55);border:2px solid rgba(200,164,92,.22);backface-visibility:hidden;transform-origin:center center}
+.gal-item img{width:100%;height:100%;object-fit:cover}
+.gal-ph{width:100%;height:100%;background:linear-gradient(135deg,rgba(200,164,92,.14),rgba(10,26,10,.55));display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.4rem}
+.gal-ph .pn{font-family:'Cinzel',serif;font-size:clamp(1.3rem,4vw,2rem);font-weight:300;color:rgba(200,164,92,.3)}
+.gal-ph span{font-family:'Cormorant',serif;font-style:italic;font-size:.78rem;color:var(--gold);opacity:.65}
+.gal-hint{text-align:center;margin-top:1.6rem;font-family:'Cormorant',serif;font-style:italic;font-size:.95rem;color:var(--dim);opacity:0}
+
+/* ═══════════════ PAGE 6 — COUNTDOWN ═══════════════ */
+.cd-wrap{width:100%;max-width:820px;margin:0 auto}
+.cd-label{font-family:'Cormorant',serif;font-style:italic;font-weight:400;font-size:clamp(1.05rem,3vw,1.7rem);color:var(--gold-l);letter-spacing:.22em;text-transform:uppercase;margin-bottom:.4rem;opacity:0;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.cd-title{font-family:'Cinzel',serif;font-weight:400;font-size:clamp(1.5rem,4.8vw,2.7rem);color:#fff;letter-spacing:.13em;margin-bottom:clamp(2rem,5vh,3.2rem);opacity:0;text-shadow:0 2px 16px rgba(0,0,0,.7)}
+.cd-boxes{display:flex;justify-content:center;gap:clamp(.5rem,2.5vw,1.6rem);flex-wrap:nowrap}
+.cd-box{flex:1;min-width:0;max-width:150px;padding:clamp(1rem,2.8vw,1.7rem) clamp(.5rem,1.5vw,1rem);border:1px solid rgba(200,164,92,.22);border-radius:6px;background:rgba(10,24,15,.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-align:center;opacity:0;transform:translateY(30px)}
+.cd-num{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(1.6rem,5.5vw,3.2rem);color:var(--gold);line-height:1}
+.cd-unit{font-family:'Cormorant',serif;font-size:clamp(.6rem,1vw,.8rem);font-weight:400;color:var(--dim);letter-spacing:.16em;text-transform:uppercase;margin-top:.45rem}
+
+/* ═══════════════ PAGE 7 — RSVP ═══════════════ */
+.p-rsvp{flex-direction:column}
+.rsvp-wrap{width:100%;max-width:600px;margin:0 auto}
+.rsvp-t{font-family:'Cinzel',serif;font-weight:400;font-size:clamp(1.4rem,4vw,2.4rem);color:var(--gold);letter-spacing:.2em;margin-bottom:clamp(.7rem,2vh,1.1rem);opacity:0;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.rsvp-p{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(1.05rem,2.6vw,1.4rem);color:var(--txt);line-height:1.9;margin-bottom:clamp(1.4rem,3.5vh,2.2rem);opacity:0;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.rsvp-btn{display:inline-flex;align-items:center;gap:.6rem;font-family:'Cinzel',serif;font-size:clamp(.72rem,1vw,.85rem);font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--deep);background:linear-gradient(135deg,var(--gold),var(--gold-l));text-decoration:none;padding:clamp(.85rem,2.2vh,1.1rem) clamp(1.4rem,3.5vw,2.6rem);border-radius:3px;transition:all .3s;opacity:0;transform:translateY(20px);box-shadow:0 6px 24px rgba(200,164,92,.35);max-width:100%}
+.rsvp-btn:hover{transform:translateY(-2px)!important;box-shadow:0 10px 34px rgba(200,164,92,.45)}
+.rsvp-btn svg{width:18px;height:18px;fill:var(--deep);flex-shrink:0}
+.rsvp-ct{margin-top:clamp(1.6rem,4vh,2.6rem);opacity:0}
+.rsvp-cl{font-family:'Cormorant',serif;font-style:italic;font-size:.95rem;color:var(--dim);margin-bottom:.45rem}
+.rsvp-cn{font-family:'Cinzel',serif;font-size:.92rem;color:var(--gold-l);letter-spacing:.1em;margin-bottom:.3rem}
+.rsvp-cp{font-family:'Cormorant Garamond',serif;font-size:clamp(.98rem,2vw,1.1rem);color:var(--txt)}
+.rsvp-cp a{color:var(--txt);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.22);transition:border-color .3s}
+.rsvp-cp a:hover{border-color:var(--gold)}
+.footer{margin-top:clamp(2.5rem,6vh,4rem);text-align:center}
+.footer-m{font-family:'Cinzel',serif;font-size:clamp(1.1rem,3vw,1.5rem);color:rgba(200,164,92,.3);letter-spacing:.3em;margin-bottom:.5rem}
+.footer-t{font-family:'Cormorant',serif;font-style:italic;font-size:clamp(.78rem,1.5vw,.9rem);color:var(--dim);letter-spacing:.1em}
+
+/* ═══ MOBILE TWEAKS ═══ */
+@media(max-width:480px){
+  .cd-boxes{gap:.4rem}
+  .cd-box{padding:.85rem .4rem}
+  .rsvp-btn{white-space:normal;text-align:center;justify-content:center}
+  .dot-nav{display:none}
+  .p-venues{padding-top:clamp(3.2rem,7vh,4.5rem);padding-bottom:clamp(1.5rem,4vh,2.5rem)}
+  .ven-grid{gap:1rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .fog,.bg-img,.bg-move{animation:none!important}
+  .scroll-chev,.m-bars span{animation:none!important}
+  *{transition-duration:.01s!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ FIXED BACKGROUND ═══ -->
+<div class="bg-layer">
+  <div class="bg-move"><div class="bg-img"></div></div>
+  <div class="bg-scrim"></div>
+  <div class="bg-fog">
+    <div class="fog fog-a"></div>
+    <div class="fog fog-b"></div>
+    <div class="fog fog-c"></div>
+  </div>
+</div>
+
+<audio id="bgMusic" loop preload="auto" playsinline webkit-playsinline>
+  <source src="wedding-song.mp3" type="audio/mpeg">
+</audio>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-mono" id="lMono">V &amp; A</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- FIXED UI BUTTONS -->
+<button class="music-btn" id="mBtn" aria-label="Toggle music">
+  <div class="m-bars" id="mBars">
+    <span style="height:4px"></span><span style="height:6px"></span>
+    <span style="height:3px"></span><span style="height:5px"></span>
+  </div>
+</button>
+<div class="music-tip" id="mTip">click to stop</div>
+
+<a href="#" class="map-btn" id="mapBtn" aria-label="Go to venue details">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/>
+  </svg>
+</a>
+
+<!-- DOT NAVIGATION -->
+<nav class="dot-nav" id="dotNav" aria-label="Page navigation"></nav>
+
+<!-- ═══ SCROLL WRAPPER ═══ -->
+<div class="sw" id="sw">
+
+  <!-- PAGE 1 — YOU ARE INVITED -->
+  <section class="page p-invite active" id="p0" style="top:0">
+    <div>
+      <div class="headline">
+        <div class="h-line" id="il1"></div>
+        <div class="h-line" id="il2"></div>
+        <div class="h-line" id="il3"></div>
+      </div>
+      <div class="intro-orn" id="iOrn">
+        <svg viewBox="0 0 140 18" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="9" x2="55" y2="9" stroke="rgba(200,164,92,.5)" stroke-width=".6"/>
+          <circle cx="62" cy="9" r="1.5" fill="none" stroke="rgba(200,164,92,.6)" stroke-width=".6"/>
+          <circle cx="70" cy="9" r="3.2" fill="none" stroke="rgba(200,164,92,.7)" stroke-width=".7"/>
+          <circle cx="78" cy="9" r="1.5" fill="none" stroke="rgba(200,164,92,.6)" stroke-width=".6"/>
+          <line x1="85" y1="9" x2="140" y2="9" stroke="rgba(200,164,92,.5)" stroke-width=".6"/>
+        </svg>
+      </div>
+      <div class="intro-sub" id="iSub">the union of two hearts</div>
+    </div>
+    <div class="scroll-cue" id="sc1">
+      <span>Scroll Down</span>
+      <div class="scroll-chev"></div>
+    </div>
+  </section>
+
+  <!-- PAGE 2 — ARAVIND WEDS VEENA -->
+  <section class="page p-names" id="p1" style="top:100vh;top:100dvh">
+    <div>
+      <div class="names-block">
+        <div class="name-line ln" id="lnA"></div>
+        <div class="name-line lw" id="lnW"></div>
+        <div class="name-line ln" id="lnV"></div>
+      </div>
+      <div class="gold-div" id="gDiv"></div>
+      <div class="save-dt" id="sDt">Save the Date</div>
+      <div class="date-tx" id="dTx">12 September 2026</div>
+      <div class="mal-dt" id="mDt">1202 Chingam 27 · Saturday</div>
+    </div>
+    <div class="scroll-cue" id="sc2">
+      <span>Scroll Down</span>
+      <div class="scroll-chev"></div>
+    </div>
+  </section>
+
+  <!-- PAGE 3 — FAMILY -->
+  <section class="page p-family" id="p2" style="top:200vh;top:calc(200dvh)">
+    <div class="fam-content">
+      <div class="fam-text" id="famTx">
+        We,<br>
+        <span class="par">Mr. Prasannakumar V. &amp; Mrs. Swarnalatha V.</span>
+        <span class="addr">Thekkepalavila, Ashtamudi P.O., Kollam</span>
+        Cordially invite you and your family to celebrate the wedding ceremony of our daughter<br><br>
+        <span class="hi">Dr. Veena S. Kumar</span>
+        <span class="amp">&amp;</span>
+        <span class="hi">Dr. Aravind K.V.</span><br>
+        <span class="par" style="margin-top:.6rem">S/o Mr. K.R. Venugopalan &amp; Mrs. Geethammal K.T.</span>
+        <span class="addr">Kuruvikattil House, Thodupuzha P.O., Idukki</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 4 — VENUE CARDS -->
+  <section class="page p-venues" id="p3" style="top:300vh;top:calc(300dvh)">
+    <div class="ven-wrap" style="display:flex;flex-direction:column;align-items:center">
+      <div class="ven-title" id="venT">Celebrations</div>
+      <div style="max-width:360px;width:100%">
+        <div class="tilt-wrap">
+          <div class="ven-card" id="cW">
+            <div class="vc-icon">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C9.5 5 7 8 7 11a5 5 0 0010 0c0-3-2.5-6-5-9z" stroke="rgba(200,164,92,.8)" stroke-width="1.2" fill="none"/>
+                <circle cx="12" cy="11" r="1.5" fill="rgba(200,164,92,.5)"/>
+                <line x1="12" y1="16" x2="12" y2="22" stroke="rgba(200,164,92,.5)" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="vc-label">Wedding Ceremony</div>
+            <div class="vc-date">September 12, 2026</div>
+            <div class="vc-day">Saturday</div>
+            <div class="vc-time">11:50 AM — 12:25 PM</div>
+            <div class="vc-name">Sarada Kalyana Mandapam<br>Randamkutty, Kilikolloor, Kollam</div>
+            <a href="https://maps.google.com/?q=Sarada+Kalyana+Mandapam+Kilikolloor+Kollam" target="_blank" rel="noopener" class="vc-map">
+              <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg>
+              View on Map
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 5 — COUNTDOWN -->
+  <section class="page p-cd" id="p4" style="top:400vh;top:calc(400dvh)">
+    <div class="cd-wrap">
+      <div class="cd-label" id="cdL">Counting down to</div>
+      <div class="cd-title" id="cdT">The Big Day</div>
+      <div class="cd-boxes" id="cdB">
+        <div class="cd-box"><div class="cd-num" id="nD">--</div><div class="cd-unit">Days</div></div>
+        <div class="cd-box"><div class="cd-num" id="nH">--</div><div class="cd-unit">Hours</div></div>
+        <div class="cd-box"><div class="cd-num" id="nM">--</div><div class="cd-unit">Mins</div></div>
+        <div class="cd-box"><div class="cd-num" id="nS">--</div><div class="cd-unit">Secs</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 6 — RSVP -->
+  <section class="page p-rsvp" id="p5" style="top:500vh;top:calc(500dvh)">
+    <div class="rsvp-wrap">
+      <div class="rsvp-t" id="rT">RSVP</div>
+      <div class="rsvp-p" id="rP">Your presence is the greatest gift.<br>Kindly let us know if you can join us<br>for this joyous celebration.</div>
+      <a href="https://wa.me/+13172133299?text=We%20will%20be%20delighted%20to%20attend%20the%20wedding!" target="_blank" rel="noopener" class="rsvp-btn" id="rBtn">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.637l4.603-1.148A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.94 9.94 0 01-5.39-1.582l-.378-.229-2.728.68.742-2.636-.266-.399A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Send RSVP via WhatsApp
+      </a>
+      <div class="rsvp-ct" id="rCt">
+        <div class="rsvp-cl">Sharing the happiness</div>
+        <div class="rsvp-cn">Sruthi S Kumar &amp; Ashish Benny</div>
+        <div class="rsvp-cp"><a href="tel:+919447066237">94470 66237</a> &nbsp;·&nbsp; <a href="tel:+919496208023">94962 08023</a></div>
+      </div>
+      <div class="footer">
+        <div class="footer-m">V &amp; A</div>
+        <div class="footer-t">With love Veena &amp; Aravind </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /sw -->
+
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   CORE ENGINE
+   Pages are absolutely stacked; we translate the wrapper.
+   Each page LOCKS navigation until its animation promise resolves.
+══════════════════════════════════════════════════════════════════ */
+
+const TOTAL = 6;
+let current = 0;
+let locked = true;    // starts locked; unlocked after loader
+let transitioning = false;
+let animDone = new Array(TOTAL).fill(false); // whether page anim has played at least once
+
+/* vh unit for cross-browser */
+function vh() {
+  return window.innerHeight;
+}
+
+/* ── Position all pages ── */
+function layoutPages() {
+  const h = vh();
+  document.querySelectorAll('.page').forEach((p, i) => {
+    p.style.top = (i * h) + 'px';
+    p.style.height = h + 'px';
+  });
+}
+layoutPages();
+window.addEventListener('resize', () => { layoutPages(); goTo(current, false); });
+
+/* ── Translate wrapper to show page i ── */
+function goTo(idx, animate) {
+  current = idx;
+  const h = vh();
+  gsap.to('#sw', {
+    y: -(idx * h),
+    duration: animate ? 1.0 : 0,
+    ease: 'power3.inOut',
+    onComplete: () => { transitioning = false; }
+  });
+  // update active class
+  document.querySelectorAll('.page').forEach((p, i) => {
+    p.classList.toggle('active', i === idx);
+  });
+  // Reset internal scroll on the page we're entering so its content
+  // always starts visible from the top.
+  const target = document.querySelectorAll('.page')[idx];
+  if (target && target.classList.contains('scrollable')) {
+    target.scrollTop = 0;
+  }
+  // update dots
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+/* ── Navigate to next/prev with animation lock ── */
+function navigate(dir) {
+  if (transitioning) return;
+  if (locked) return;
+  const target = current + dir;
+  if (target < 0 || target >= TOTAL) return;
+
+  // If trying to leave current page, check if current anim is done
+  if (!animDone[current]) return;
+
+  transitioning = true;
+  goTo(target, true);
+
+  // Replay the venue-card flip animation every time it is entered,
+  // whether moving forward OR backward through it.
+  if (target === 3) {
+    playAnim(3, true);
+  } else if (!animDone[target]) {
+    playAnim(target);
+  }
+}
+
+/* ════════════════════════════════════════════
+   ANIMATIONS — one per page
+════════════════════════════════════════════ */
+
+/* split text helper */
+function sp(id, t) {
+  const e = document.getElementById(id);
+  if (!e) return [];
+  e.innerHTML = '';
+  t.split('').forEach(c => {
+    const s = document.createElement('span');
+    s.className = 'letter';
+    if (c === '!') s.classList.add('excl');
+    s.textContent = c === ' ' ? '\u00A0' : c;
+    e.appendChild(s);
+  });
+  return Array.from(e.querySelectorAll('.letter'));
+}
+
+// Build letter spans immediately
+const i1 = sp('il1', 'YOU ARE');
+const i2 = sp('il2', 'INVITED TO');
+const i3 = sp('il3', 'CELEBRATE!');
+const lA = sp('lnA', 'VEENA');
+const lW = sp('lnW', 'Weds');
+const lV = sp('lnV', 'ARAVIND');
+
+/* Returns a Promise that resolves when the animation ends.
+   `force` (used for the venue page) replays the animation even
+   if it has already played before — e.g. when navigating back to it. */
+function playAnim(idx, force) {
+  return new Promise(resolve => {
+    const done = () => { animDone[idx] = true; resolve(); };
+
+    if (idx === 0) {
+      // Page 1 — letters drop from above
+      const tl = gsap.timeline({ onComplete: done });
+      tl.fromTo(i1,
+          { opacity: 0, y: -120, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.3, stagger: 0.09, ease: 'power3.out' })
+        .fromTo(i2,
+          { opacity: 0, y: -100, filter: 'blur(8px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.09, ease: 'power3.out' }, '-=0.9')
+        .fromTo(i3,
+          { opacity: 0, y: -120, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.3, stagger: 0.09, ease: 'power3.out' }, '-=0.9')
+        .to('#iOrn', { opacity: 1, duration: 0.7 }, '-=0.2')
+        .to('#iSub', { opacity: 1, duration: 0.8 }, '-=0.4')
+        .to('#sc1',  { opacity: 1, duration: 0.5 });
+
+    } else if (idx === 1) {
+      // Page 2 — big names drop
+      const tl = gsap.timeline({ onComplete: done });
+      tl.fromTo(lA,
+          { opacity: 0, y: -140, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.5, stagger: 0.08, ease: 'power3.out' })
+        .fromTo(lW,
+          { opacity: 0, y: -90, filter: 'blur(6px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.1, ease: 'power3.out' }, '-=0.8')
+        .fromTo(lV,
+          { opacity: 0, y: -130, filter: 'blur(10px)' },
+          { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.5, stagger: 0.08, ease: 'power3.out' }, '-=0.7')
+        .to('#gDiv',  { width: 200, duration: 0.8, ease: 'power2.out' }, '+=0.1')
+        .fromTo('#sDt',  { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7 }, '-=0.4')
+        .fromTo('#dTx',  { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7 }, '-=0.4')
+        .fromTo('#mDt',  { opacity: 0 },         { opacity: 1, duration: 0.5 },       '-=0.2')
+        .to('#sc2',      { opacity: 1, duration: 0.5 });
+
+    } else if (idx === 2) {
+      // Page 3 — family text fades up
+      gsap.fromTo('#famTx',
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out', onComplete: done });
+
+    } else if (idx === 3) {
+      // Page 4 — venue cards swing in (replays every visit, forward or backward)
+      const isTouch = window.matchMedia('(pointer:coarse)').matches;
+      const tl = gsap.timeline({ onComplete: done });
+
+      // Reset state so the flip-in animation is visible again on re-entry
+      if (force) {
+        gsap.set('#venT', { opacity: 0, y: 20 });
+        if (isTouch) {
+          gsap.set('.ven-card', { opacity: 0, rotationY: -90, transformOrigin: 'left center' });
+        } else {
+          gsap.set('#cW', { opacity: 0, y: 50 });
+        }
+      }
+
+      tl.fromTo('#venT',
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.7 });
+      if (isTouch) {
+        tl.fromTo('.ven-card',
+          { opacity: 0, rotationY: -90, transformOrigin: 'left center' },
+          { opacity: 1, rotationY: 0, duration: 1.1, stagger: 0.28, ease: 'power3.out' }, '-=0.2');
+      } else {
+        tl.fromTo('#cW',
+            { opacity: 0, y: 50 },
+            { opacity: 1, y: 0, duration: 0.85, ease: 'power2.out' }, '-=0.3');
+      }
+
+    } else if (idx === 4) {
+      // Page 5 — countdown boxes
+      const tl = gsap.timeline({ onComplete: done });
+      tl.fromTo('#cdL', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6 })
+        .fromTo('#cdT', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.65 }, '-=0.3')
+        .to('.cd-box',  { opacity: 1, y: 0,    duration: 0.6, stagger: 0.12, ease: 'power2.out' }, '-=0.2');
+
+    } else if (idx === 5) {
+      // Page 6 — RSVP
+      const tl = gsap.timeline({ onComplete: done });
+      tl.fromTo('#rT',   { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.65 })
+        .fromTo('#rP',   { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.65 }, '-=0.3')
+        .to('#rBtn',     { opacity: 1, y: 0,    duration: 0.65, ease: 'back.out(1.7)' }, '-=0.3')
+        .fromTo('#rCt',  { opacity: 0 },         { opacity: 1, duration: 0.5 }, '-=0.1');
+    }
+  });
+}
+
+/* ════════════════════════════════════════════
+   LOADER → Start page 1 anim
+════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  const tl = gsap.timeline();
+  tl.to('#lMono', { opacity: 1, duration: 0.8, ease: 'power2.out' })
+    .to('#loader', {
+      opacity: 0, duration: 0.7, delay: 0.6, ease: 'power2.inOut',
+      onComplete: () => {
+        document.getElementById('loader').style.display = 'none';
+        locked = false;
+        playAnim(0);  // play page 1 anim; when done, animDone[0]=true → nav unlocks
+      }
+    });
+});
+
+/* ════════════════════════════════════════════
+   DOT NAV BUILD
+════════════════════════════════════════════ */
+const labels = ['Invite','Names','Family','Venue','Countdown','RSVP'];
+const dotNav = document.getElementById('dotNav');
+labels.forEach((lbl, i) => {
+  const d = document.createElement('button');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.setAttribute('aria-label', lbl);
+  d.addEventListener('click', () => {
+    if (!animDone[current]) return;
+    if (transitioning || locked) return;
+    if (i === current) return;
+    transitioning = true;
+    goTo(i, true);
+    if (i === 3) {
+      playAnim(3, true);
+    } else if (!animDone[i]) {
+      playAnim(i);
+    }
+  });
+  dotNav.appendChild(d);
+});
+
+/* ════════════════════════════════════════════
+   INPUT: wheel, touch, keyboard
+════════════════════════════════════════════ */
+let wheelAcc = 0;
+let wheelTimer = null;
+const WHEEL_THRESH = 60; // pixels accumulated before triggering
+const EDGE_SLOP = 2; // px tolerance for "at scroll edge"
+
+/* For pages that scroll internally (e.g. two stacked venue cards taller
+   than the viewport), only change page once the user has scrolled that
+   page's content to the matching edge — otherwise let it scroll normally. */
+function activeScrollEl() {
+  const p = document.querySelectorAll('.page')[current];
+  return p && p.classList.contains('scrollable') ? p : null;
+}
+function atTopEdge(el)    { return el.scrollTop <= EDGE_SLOP; }
+function atBottomEdge(el) { return el.scrollTop + el.clientHeight >= el.scrollHeight - EDGE_SLOP; }
+
+window.addEventListener('wheel', e => {
+  if (locked || transitioning || !animDone[current]) { e.preventDefault(); return; }
+
+  const sEl = activeScrollEl();
+  if (sEl && sEl.scrollHeight > sEl.clientHeight + 1) {
+    const goingDown = e.deltaY > 0;
+    const goingUp   = e.deltaY < 0;
+    if ((goingDown && !atBottomEdge(sEl)) || (goingUp && !atTopEdge(sEl))) {
+      // Let the page scroll its own content; don't hijack for page-nav.
+      return;
+    }
+  }
+
+  e.preventDefault();
+  wheelAcc += e.deltaY;
+  clearTimeout(wheelTimer);
+  wheelTimer = setTimeout(() => { wheelAcc = 0; }, 200);
+  if (Math.abs(wheelAcc) >= WHEEL_THRESH) {
+    navigate(wheelAcc > 0 ? 1 : -1);
+    wheelAcc = 0;
+  }
+}, { passive: false });
+
+// Touch
+let touchStartY = 0;
+let touchStartX = 0;
+window.addEventListener('touchstart', e => {
+  touchStartY = e.touches[0].clientY;
+  touchStartX = e.touches[0].clientX;
+}, { passive: true });
+window.addEventListener('touchend', e => {
+  if (locked || transitioning || !animDone[current]) return;
+  const dy = touchStartY - e.changedTouches[0].clientY;
+  const dx = Math.abs(touchStartX - e.changedTouches[0].clientX);
+  // Only act on vertical swipes
+  if (Math.abs(dy) > 40 && Math.abs(dy) > dx * 1.5) {
+    const sEl = activeScrollEl();
+    if (sEl && sEl.scrollHeight > sEl.clientHeight + 1) {
+      const swipingUp   = dy > 0; // content moves up → reveal lower content / next page
+      const swipingDown = dy < 0;
+      if ((swipingUp && !atBottomEdge(sEl)) || (swipingDown && !atTopEdge(sEl))) {
+        return; // still room to scroll within the page itself
+      }
+    }
+    navigate(dy > 0 ? 1 : -1);
+  }
+}, { passive: true });
+
+// Keyboard
+window.addEventListener('keydown', e => {
+  if (locked || transitioning || !animDone[current]) return;
+  if (e.key === 'ArrowDown' || e.key === 'PageDown') navigate(1);
+  if (e.key === 'ArrowUp'   || e.key === 'PageUp')   navigate(-1);
+});
+
+/* ════════════════════════════════════════════
+   MUSIC
+════════════════════════════════════════════ */
+(function () {
+  const btn = document.getElementById('mBtn'),
+        bars = document.getElementById('mBars'),
+        au   = document.getElementById('bgMusic'),
+        tip  = document.getElementById('mTip');
+  let playing = false, tipTimer = null, started = false;
+
+  function showTip(tx) {
+    tip.textContent = tx;
+    tip.classList.add('show');
+    clearTimeout(tipTimer);
+    tipTimer = setTimeout(() => tip.classList.remove('show'), 3500);
+  }
+  function setUI(p) { playing = p; bars.classList.toggle('on', p); }
+
+  function tryAuto() {
+    if (started) return;
+    const p = au.play();
+    if (p !== undefined) p.then(() => { started = true; setUI(true); showTip('click to stop'); }).catch(() => {});
+  }
+  function unlock() {
+    if (started) return;
+    au.play().then(() => { started = true; setUI(true); showTip('click to stop'); }).catch(() => {});
+  }
+
+  tryAuto();
+  ['pointerdown','touchstart','keydown'].forEach(ev =>
+    document.addEventListener(ev, unlock, { capture: true, passive: true, once: true })
+  );
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    started = true;
+    if (playing) { au.pause(); setUI(false); tip.classList.remove('show'); }
+    else { au.play().then(() => setUI(true)).catch(() => {}); }
+  });
+  au.addEventListener('play',  () => setUI(true));
+  au.addEventListener('pause', () => setUI(false));
+})();
+
+/* ════════════════════════════════════════════
+   MAP BTN → go to venue page (page 4, idx 3)
+════════════════════════════════════════════ */
+document.getElementById('mapBtn').addEventListener('click', e => {
+  e.preventDefault();
+  if (locked || transitioning) return;
+  if (!animDone[current]) return;
+  transitioning = true;
+  goTo(3, true);
+  playAnim(3, true);
+});
+
+/* ════════════════════════════════════════════
+   VENUE CARDS — tilt on desktop
+════════════════════════════════════════════ */
+(function () {
+  const isTouch = window.matchMedia('(pointer:coarse)').matches;
+  if (!isTouch) {
+    document.querySelectorAll('.ven-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top)  / r.height - 0.5;
+        card.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 14}deg)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transition = 'transform .5s ease-out';
+        card.style.transform = 'rotateY(0) rotateX(0)';
+        setTimeout(() => card.style.transition = '', 500);
+      });
+      card.addEventListener('mouseenter', () => { card.style.transition = ''; });
+    });
+  } else {
+    // Mobile float
+    document.querySelectorAll('.ven-card').forEach((card, i) => {
+      gsap.to(card, { y: '+=10', duration: 3 + i * 0.4, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: i * 0.3 });
+    });
+  }
+})();
+
+/* ════════════════════════════════════════════
+   COUNTDOWN
+════════════════════════════════════════════ */
+(function () {
+  const t = new Date('2026-09-12T11:50:00+05:30').getTime();
+  function tick() {
+    const d = t - Date.now();
+    if (d <= 0) { ['nD','nH','nM','nS'].forEach(id => document.getElementById(id).textContent = '0'); return; }
+    document.getElementById('nD').textContent = Math.floor(d / 864e5);
+    document.getElementById('nH').textContent = Math.floor(d % 864e5 / 36e5);
+    document.getElementById('nM').textContent = Math.floor(d % 36e5 / 6e4);
+    document.getElementById('nS').textContent = String(Math.floor(d % 6e4 / 1e3)).padStart(2, '0');
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+/* ════════════════════════════════════════════
+   LETTER HOVER GLOW
+════════════════════════════════════════════ */
+document.querySelectorAll('.letter').forEach(l => {
+  l.addEventListener('mouseenter', () =>
+    gsap.to(l, { textShadow: '0 0 35px rgba(200,164,92,.7),0 3px 25px rgba(0,0,0,.85)', scale: 1.06, duration: 0.25 }));
+  l.addEventListener('mouseleave', () =>
+    gsap.to(l, { scale: 1, duration: 0.35 }));
+});
+</script>
+</body>
+</html>
